@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -23,6 +24,12 @@ namespace Demo
             }
 
             return base.GetOrDefault(defaultValue, name);
+        }
+
+        public CultureInfo Property5
+        {
+            get => CultureInfo.GetCultureInfo(Get());
+            set => Set(value.Name);
         }
     }
 }
