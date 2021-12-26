@@ -8,13 +8,13 @@
 //------------------------------------------------------------------------------
 #nullable enable
 
-public abstract class GeneratedBase<TInterface>
+public abstract class GeneratedBase
 {
     private sealed class StronglyTypedKvpWrapper : IStronglyTypedKeyValuePairAccessor
     {
-        private readonly IDictionary<string, object> dictionary;
+        private readonly global::System.Collections.Generic.IDictionary<string, object> dictionary;
 
-        public StronglyTypedKvpWrapper(IDictionary<string, object> dictionary)
+        public StronglyTypedKvpWrapper(global::System.Collections.Generic.IDictionary<string, object> dictionary)
         {
             this.dictionary = dictionary;
         }
@@ -61,32 +61,10 @@ public abstract class GeneratedBase<TInterface>
         this.stronglyTypedKeyValuePairAccessor = stronglyTypedKeyValuePairAccessor;
     }
 
-    private protected GeneratedBase(IDictionary<string, object> dictionary)
+    private protected GeneratedBase(global::System.Collections.Generic.IDictionary<string, object> dictionary)
         : this(new StronglyTypedKvpWrapper(dictionary))
     {
-        
-    }
 
-    public TProperty Get<TProperty>(global::System.Linq.Expressions.Expression<Func<TInterface, TProperty>> expression)
-        where TProperty : unmanaged
-    {
-        return Get<TProperty>(GetMemberName(expression));
-    }
-
-    public string Get(global::System.Linq.Expressions.Expression<Func<TInterface, string>> expression)
-    {
-        return Get(GetMemberName(expression));
-    }
-
-    public void Set<TProperty>(global::System.Linq.Expressions.Expression<Func<TInterface, TProperty>> expression, TProperty value)
-        where TProperty : unmanaged
-    {
-        stronglyTypedKeyValuePairAccessor.Set(GetMemberName(expression), value);
-    }
-
-    public void Set(global::System.Linq.Expressions.Expression<Func<TInterface, string>> expression, string value)
-    {
-        stronglyTypedKeyValuePairAccessor.Set(GetMemberName(expression), value);
     }
 
     protected T Get<T>([global::System.Runtime.CompilerServices.CallerMemberName] string name = null!) where T : unmanaged
@@ -119,6 +97,39 @@ public abstract class GeneratedBase<TInterface>
     protected void Set(string value, [global::System.Runtime.CompilerServices.CallerMemberName] string name = null!)
     {
         stronglyTypedKeyValuePairAccessor.Set(name, value);
+    }
+}
+
+public abstract class GeneratedBase<TInterface> : GeneratedBase
+{
+    private protected GeneratedBase(IStronglyTypedKeyValuePairAccessor stronglyTypedKeyValuePairAccessor) : base(stronglyTypedKeyValuePairAccessor)
+    {
+    }
+
+    private protected GeneratedBase(global::System.Collections.Generic.IDictionary<string, object> dictionary) : base(dictionary)
+    {
+    }
+
+    public TProperty Get<TProperty>(global::System.Linq.Expressions.Expression<Func<TInterface, TProperty>> expression)
+        where TProperty : unmanaged
+    {
+        return base.Get<TProperty>(GetMemberName(expression));
+    }
+
+    public string Get(global::System.Linq.Expressions.Expression<Func<TInterface, string>> expression)
+    {
+        return base.Get(GetMemberName(expression));
+    }
+
+    public void Set<TProperty>(global::System.Linq.Expressions.Expression<Func<TInterface, TProperty>> expression, TProperty value)
+        where TProperty : unmanaged
+    {
+        base.Set<TProperty>(value, GetMemberName(expression));
+    }
+
+    public void Set(global::System.Linq.Expressions.Expression<Func<TInterface, string>> expression, string value)
+    {
+        base.Set(value, GetMemberName(expression));
     }
 
     private static string GetMemberName<TProperty>(global::System.Linq.Expressions.Expression<Func<TInterface, TProperty>> expression)
