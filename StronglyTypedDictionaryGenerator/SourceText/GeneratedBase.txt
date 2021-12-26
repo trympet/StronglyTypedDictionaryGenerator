@@ -116,6 +116,11 @@ public abstract class GeneratedBase<TInterface>
         stronglyTypedKeyValuePairAccessor.Set(name, value);
     }
 
+    protected void Set(string value, [global::System.Runtime.CompilerServices.CallerMemberName] string name = null!)
+    {
+        stronglyTypedKeyValuePairAccessor.Set(name, value);
+    }
+
     private static string GetMemberName<TProperty>(global::System.Linq.Expressions.Expression<Func<TInterface, TProperty>> expression)
     {
         return expression.Body switch

@@ -123,7 +123,11 @@ namespace StronglyTypedDictionaryGenerator
                 {
                     sb.Append($"OrDefault");
                 }
-                sb.Append($"<{member.Type.ToDisplayString()}>(");
+                if (member.Type.IsUnmanagedType)
+                {
+                    sb.Append($"<{member.Type.ToDisplayString()}>");
+                }
+                sb.Append('(');
                 if (hasDefaultValue)
                 {
                     sb.Append(defaultValue!.Value.ToCSharpString());
