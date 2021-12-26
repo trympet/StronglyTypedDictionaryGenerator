@@ -10,5 +10,10 @@ namespace StronglyTypedDictionaryGenerator
         public static bool IsInContainingNamespace(this INamedTypeSymbol namedTypeSymbol)
             => namedTypeSymbol.ContainingSymbol.Equals(namedTypeSymbol.ContainingNamespace,
                 SymbolEqualityComparer.Default);
+
+        public static bool IsString(this ITypeSymbol? typeSymbol)
+        {
+            return typeSymbol?.ContainingNamespace?.Name == "System" && typeSymbol?.MetadataName == "String";
+        }
     }
 }

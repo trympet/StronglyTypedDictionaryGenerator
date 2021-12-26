@@ -100,7 +100,7 @@ namespace StronglyTypedDictionaryGenerator
                     .GetMembers()
                     .OfType<IPropertySymbol>()
                     .Where(x => !x.IsIndexer)
-                    .Where(x => x.Type.IsUnmanagedType || x.Type.MetadataName == "System.String"))
+                    .Where(x => x.Type.IsUnmanagedType || x.Type.IsString()))
                 .Distinct<IPropertySymbol>(SymbolEqualityComparer.Default);
 
             EnumerateAndGenerate(attributeArgs, sb, members);
