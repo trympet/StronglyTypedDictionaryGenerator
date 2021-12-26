@@ -16,7 +16,10 @@ interface IMyInterface
     [System.ComponentModel.DefaultValue(true)]
     bool Property3 { get; set; }
 
-    bool Property4 { get; set; }
+    [System.ComponentModel.DefaultValue("Hello Roslyn!")]
+    string Property4 { get; set; }
+
+    CultureInfo Property5 { get; set; }
 }
 
 [StronglyTypedDictionary(targetType: typeof(IMyInterface), supportsDefaultValues: true)]
@@ -36,6 +39,12 @@ internal partial class MyStronglyTypedDictionary : IMyInterface
         }
 
         return base.GetOrDefault(defaultValue, name);
+    }
+
+    public CultureInfo Property5
+    {
+        get => CultureInfo.GetCultureInfo(Get());
+        set => Set(value.Name);
     }
 }
 ```
@@ -67,20 +76,20 @@ internal partial class MyStronglyTypedDictionary : GeneratedBase<global::Demo.IM
         get => GetOrDefault<bool>(true);
         set => Set(value);
     }
-    public bool Property4
+    public string Property4
     {
-        get => Get<bool>();
+        get => GetOrDefault("Hello Roslyn!");
         set => Set(value);
     }
 }
 
-public abstract class GeneratedBase<TInterface>
+public abstract class GeneratedBase
 {
-    private class StronglyTypedKvpWrapper : IStronglyTypedKeyValuePairAccessor
+    private sealed class StronglyTypedKvpWrapper : IStronglyTypedKeyValuePairAccessor
     {
-        private readonly IDictionary<string, object> dictionary;
+        private readonly global::System.Collections.Generic.IDictionary<string, object> dictionary;
 
-        public StronglyTypedKvpWrapper(IDictionary<string, object> dictionary)
+        public StronglyTypedKvpWrapper(global::System.Collections.Generic.IDictionary<string, object> dictionary)
         {
             this.dictionary = dictionary;
         }
@@ -90,15 +99,31 @@ public abstract class GeneratedBase<TInterface>
             return (T)dictionary[name];
         }
 
+        public string Get(string name)
+        {
+            return (string)dictionary[name];
+        }
+
         public bool TryGet<T>(string name, out T value) where T : unmanaged
         {
-            object v;
-            var result = dictionary.TryGetValue(name, out v);
-            value = (T)v;
+            var result = dictionary.TryGetValue(name, out object? v);
+            value = v is not null ? (T)v : default;
+            return result;
+        }
+
+        public bool TryGet(string name, [global::System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out string? value)
+        {
+            var result = dictionary.TryGetValue(name, out object? v);
+            value = (string?)v;
             return result;
         }
 
         public void Set<T>(string name, T value) where T : unmanaged
+        {
+            dictionary[name] = value;
+        }
+
+        public void Set(string name, string value)
         {
             dictionary[name] = value;
         }
@@ -111,27 +136,20 @@ public abstract class GeneratedBase<TInterface>
         this.stronglyTypedKeyValuePairAccessor = stronglyTypedKeyValuePairAccessor;
     }
 
-    private protected GeneratedBase(IDictionary<string, object> dictionary)
+    private protected GeneratedBase(global::System.Collections.Generic.IDictionary<string, object> dictionary)
         : this(new StronglyTypedKvpWrapper(dictionary))
     {
-        
-    }
 
-    public TProperty Get<TProperty>(global::System.Linq.Expressions.Expression<Func<TInterface, TProperty>> expression)
-        where TProperty : unmanaged
-    {
-        return Get<TProperty>(GetMemberName(expression));
-    }
-
-    public void Set<TProperty, TValue>(global::System.Linq.Expressions.Expression<Func<TInterface, TValue>> expression, TProperty value)
-        where TProperty : unmanaged, TValue
-    {
-        stronglyTypedKeyValuePairAccessor.Set(GetMemberName(expression), value);
     }
 
     protected T Get<T>([global::System.Runtime.CompilerServices.CallerMemberName] string name = null!) where T : unmanaged
     {
         return stronglyTypedKeyValuePairAccessor.Get<T>(name);
+    }
+
+    protected string Get([global::System.Runtime.CompilerServices.CallerMemberName] string name = null!)
+    {
+        return stronglyTypedKeyValuePairAccessor.Get(name);
     }
 
     [global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
@@ -140,9 +158,53 @@ public abstract class GeneratedBase<TInterface>
         return stronglyTypedKeyValuePairAccessor.TryGet(name, out T result) ? result : defaultValue;
     }
 
+    [global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+    protected virtual string GetOrDefault(string defaultValue, [global::System.Runtime.CompilerServices.CallerMemberName] string name = null!)
+    {
+        return stronglyTypedKeyValuePairAccessor.TryGet(name, out string? result) ? result : defaultValue;
+    }
+
     protected void Set<T>(T value, [global::System.Runtime.CompilerServices.CallerMemberName] string name = null!) where T : unmanaged
     {
         stronglyTypedKeyValuePairAccessor.Set(name, value);
+    }
+
+    protected void Set(string value, [global::System.Runtime.CompilerServices.CallerMemberName] string name = null!)
+    {
+        stronglyTypedKeyValuePairAccessor.Set(name, value);
+    }
+}
+
+public abstract class GeneratedBase<TInterface> : GeneratedBase
+{
+    private protected GeneratedBase(IStronglyTypedKeyValuePairAccessor stronglyTypedKeyValuePairAccessor) : base(stronglyTypedKeyValuePairAccessor)
+    {
+    }
+
+    private protected GeneratedBase(global::System.Collections.Generic.IDictionary<string, object> dictionary) : base(dictionary)
+    {
+    }
+
+    public TProperty Get<TProperty>(global::System.Linq.Expressions.Expression<Func<TInterface, TProperty>> expression)
+        where TProperty : unmanaged
+    {
+        return base.Get<TProperty>(GetMemberName(expression));
+    }
+
+    public string Get(global::System.Linq.Expressions.Expression<Func<TInterface, string>> expression)
+    {
+        return base.Get(GetMemberName(expression));
+    }
+
+    public void Set<TProperty>(global::System.Linq.Expressions.Expression<Func<TInterface, TProperty>> expression, TProperty value)
+        where TProperty : unmanaged
+    {
+        base.Set<TProperty>(value, GetMemberName(expression));
+    }
+
+    public void Set(global::System.Linq.Expressions.Expression<Func<TInterface, string>> expression, string value)
+    {
+        base.Set(value, GetMemberName(expression));
     }
 
     private static string GetMemberName<TProperty>(global::System.Linq.Expressions.Expression<Func<TInterface, TProperty>> expression)
