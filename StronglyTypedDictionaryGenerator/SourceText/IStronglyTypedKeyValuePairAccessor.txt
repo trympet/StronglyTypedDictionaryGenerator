@@ -11,7 +11,13 @@ public interface IStronglyTypedKeyValuePairAccessor
 {
     T Get<T>(string name) where T : unmanaged;
 
+    string Get(string name);
+
     bool TryGet<T>(string name, out T value) where T : unmanaged;
 
+    bool TryGet(string name, [global::System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out string? value);
+
     void Set<T>(string name, T value) where T : unmanaged;
+
+    void Set(string name, string value);
 }

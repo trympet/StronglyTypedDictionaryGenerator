@@ -14,12 +14,12 @@ namespace StronglyTypedDictionaryGenerator
     {
         public void Initialize(GeneratorInitializationContext context)
         {
-            System.Diagnostics.Debugger.Launch();
             context.RegisterForSyntaxNotifications(() => new StronglyTypedDictionarySyntaxReceiver());
         }
 
         public void Execute(GeneratorExecutionContext context)
         {
+            //System.Diagnostics.Debugger.Launch();
             var stronglyTypedDictionary = new StronglyTypedDictionary(context);
             stronglyTypedDictionary.GenerateAttributes();
             stronglyTypedDictionary.GenerateSupportingTypes();

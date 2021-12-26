@@ -93,9 +93,23 @@ namespace StronglyTypedDictionaryGenerator
         private string EnumerateAndGenerateProperties(AttributeArgs attributeArgs)
         {
             var sb = new StringBuilder();
-            var members = attributeArgs.TargetSymbol.GetMembers()
-                .OfType<IPropertySymbol>()
-                .Where(x => !x.IsIndexer);
+            var targetSymbol = attributeArgs.TargetSymbol;
+            var targetSymbols = new List<INamedTypeSymbol> { targetSymbol };
+            targetSymbols.AddRange(targetSymbol.AllInterfaces);
+            var members = targetSymbols.SelectMany(x => x
+                    .GetMembers()
+                    .OfType<IPropertySymbol>()
+                    .Where(x => !x.IsIndexer)
+                    .Where(x => x.Type.IsUnmanagedType || x.Type.MetadataName == "System.String"))
+                .Distinct<IPropertySymbol>(SymbolEqualityComparer.Default);
+
+            EnumerateAndGenerate(attributeArgs, sb, members);
+
+            return sb.ToString();
+        }
+
+        private void EnumerateAndGenerate(AttributeArgs attributeArgs, StringBuilder sb, IEnumerable<IPropertySymbol> members)
+        {
             foreach (var member in members)
             {
                 sb.AppendLine(attributeArgs.ImplementationPublic
@@ -118,8 +132,6 @@ namespace StronglyTypedDictionaryGenerator
                 sb.AppendLine($"{GetIndent(3)}set => Set(value);");
                 sb.AppendLine($"{GetIndent(2)}}}");
             }
-
-            return sb.ToString();
         }
 
         private TypedConstant? GetDefaultValue(IPropertySymbol member)
@@ -142,13 +154,20 @@ namespace StronglyTypedDictionaryGenerator
                 return null;
             }
 
-            var targetTypeArg = (INamedTypeSymbol?)attribute.ConstructorArguments[1].Value;
-            return new AttributeArgs
+            try
             {
-                ImplementationPublic = ((int)attribute.ConstructorArguments[0].Value!) == 0,
-                TargetSymbol = targetTypeArg ?? namedTypeSymbol,
-                SupportsDefaultValues = (bool)attribute.ConstructorArguments[2].Value!
-            };
+                var targetTypeArg = (INamedTypeSymbol?)attribute.ConstructorArguments[1].Value;
+                return new AttributeArgs
+                {
+                    ImplementationPublic = ((int)attribute.ConstructorArguments[0].Value!) == 0,
+                    TargetSymbol = targetTypeArg ?? namedTypeSymbol,
+                    SupportsDefaultValues = (bool)attribute.ConstructorArguments[2].Value!
+                };
+            }
+            catch (InvalidCastException)
+            {
+                return null;
+            }
         }
 
         private static string GetIndent(int level)
