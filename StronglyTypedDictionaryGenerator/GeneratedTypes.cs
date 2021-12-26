@@ -29,7 +29,7 @@ namespace StronglyTypedDictionaryGenerator
 
             public string TypeName { get; }
 
-            public string GeneratedFileName => $"{TypeName}.cs";
+            public string GeneratedFileName => $"{TypeName}.g";
 
             public string SourceTextFileName => $"{TypeName}.{Extension}";
 

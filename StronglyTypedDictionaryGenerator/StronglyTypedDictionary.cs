@@ -35,7 +35,7 @@ namespace StronglyTypedDictionaryGenerator
             var sourceText = GetGeneratedSource(namedTypeSymbol, attributeSymbol);
             if (sourceText is not null)
             {
-                context.AddSource($"{namedTypeSymbol.Name}_StronglyTypedDictionary.cs", SourceText.From(sourceText, Encoding.UTF8));
+                context.AddSource($"{namedTypeSymbol.Name}_StronglyTypedDictionary.g", SourceText.From(sourceText, Encoding.UTF8));
             }
         }
 
