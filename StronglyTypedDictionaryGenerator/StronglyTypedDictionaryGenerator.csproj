@@ -12,7 +12,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<PackageTags>dotnet roslyn</PackageTags>
+		<PackageTags>dotnet;roslyn;source generator;strongly typed;dictionary generator</PackageTags>
 		<PackOnBuild>true</PackOnBuild>
 		<PackFolder>analyzers/dotnet/cs</PackFolder>
 		<PackageProjectUrl>https://github.com/trympet/StronglyTypedDictionaryGenerator</PackageProjectUrl>
@@ -26,6 +26,7 @@
 		<Authors>Trym Lund Flogard</Authors>
 		<Company>Konfluent AS</Company>
 		<Copyright>Copyright © 2021 Trym Lund Flogard</Copyright>
+		<Description>A source generator for creating dictionaries backed by a strongly typed interface.</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
