@@ -20,6 +20,9 @@ interface IMyInterface
     string Property4 { get; set; }
 
     CultureInfo Property5 { get; set; }
+    
+    [System.ComponentModel.DefaultValue(null)]
+    TimeSpan Property6 { get; set; }
 }
 
 [StronglyTypedDictionary(targetType: typeof(IMyInterface), supportsDefaultValues: true)]
@@ -79,6 +82,11 @@ internal partial class MyStronglyTypedDictionary : GeneratedBase<global::Demo.IM
     public string Property4
     {
         get => GetOrDefault("Hello Roslyn!");
+        set => Set(value);
+    }
+    public string Property6
+    {
+        get => GetOrDefault<System.TimeSpan>(default(System.TimeSpan));
         set => Set(value);
     }
 }
