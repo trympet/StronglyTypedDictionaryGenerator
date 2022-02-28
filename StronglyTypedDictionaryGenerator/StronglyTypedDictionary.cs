@@ -117,7 +117,7 @@ namespace StronglyTypedDictionaryGenerator
                     : $"{GetIndent(2)}{member.Type.ToDisplayString()} {attributeArgs.TargetSymbol.Name}.{member.Name}");
                 sb.AppendLine($"{GetIndent(2)}{{");
                 sb.Append($"{GetIndent(3)}get => Get");
-                var defaultValue = attributeArgs.SupportsDefaultValues ? GetDefaultValue(member) : null;
+                var defaultValue = attributeArgs.SupportsDefaultValues ? GetDefaultValueString(member) : null;
                 var hasDefaultValue = defaultValue is not null;
                 if (hasDefaultValue)
                 {
@@ -130,7 +130,7 @@ namespace StronglyTypedDictionaryGenerator
                 sb.Append('(');
                 if (hasDefaultValue)
                 {
-                    sb.Append(defaultValue!.Value.ToCSharpString());
+                    sb.Append(defaultValue);
                 }
                 sb.AppendLine(");");
                 sb.AppendLine($"{GetIndent(3)}set => Set(value);");
@@ -138,11 +138,26 @@ namespace StronglyTypedDictionaryGenerator
             }
         }
 
-        private TypedConstant? GetDefaultValue(IPropertySymbol member)
+        private string? GetDefaultValueString(IPropertySymbol member)
         {
-            if (member.GetAttributes().FirstOrDefault(x => x.AttributeClass?.Name == "DefaultValueAttribute") is AttributeData attributeData)
+            if (member.GetAttributes().FirstOrDefault(x => x.AttributeClass?.Name == "DefaultValueAttribute") is AttributeData attributeData
+                && attributeData.ConstructorArguments.FirstOrDefault() is TypedConstant defaultConstant)
             {
-                return attributeData.ConstructorArguments.FirstOrDefault();
+
+                if (defaultConstant.IsNull && member.Type.IsUnmanagedType)
+                {
+                    return $"default({member.Type.ToDisplayString()})";
+                }
+
+                var cSharpString = defaultConstant.ToCSharpString();
+                if (defaultConstant.Kind == TypedConstantKind.Primitive
+                    && defaultConstant.Value is double d
+                    && double.IsNaN(d))
+                {
+                    cSharpString = $"double.{cSharpString}";
+                }
+
+                return cSharpString;
             }
 
             return null;
