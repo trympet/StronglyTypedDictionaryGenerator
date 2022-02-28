@@ -143,12 +143,22 @@ namespace StronglyTypedDictionaryGenerator
             if (member.GetAttributes().FirstOrDefault(x => x.AttributeClass?.Name == "DefaultValueAttribute") is AttributeData attributeData
                 && attributeData.ConstructorArguments.FirstOrDefault() is TypedConstant defaultConstant)
             {
-                if (!defaultConstant.IsNull || !member.Type.IsUnmanagedType)
+
+                if (defaultConstant.IsNull && member.Type.IsUnmanagedType)
                 {
-                    return defaultConstant.ToCSharpString();
+                    return $"default({member.Type.ToDisplayString()})";
                 }
 
-                return $"default({member.Type.ToDisplayString()})";
+                var cSharpString = defaultConstant.ToCSharpString();
+                if (defaultConstant.Kind == TypedConstantKind.Primitive
+                    && defaultConstant.Value is double d
+                    && double.IsNaN(d))
+                {
+                    cSharpString = $"double.{cSharpString}";
+                }
+
+                return cSharpString;
+
             }
 
             return null;
