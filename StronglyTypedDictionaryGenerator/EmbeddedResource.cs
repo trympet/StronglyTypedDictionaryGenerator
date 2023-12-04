@@ -10,10 +10,6 @@ namespace StronglyTypedDictionaryGenerator
         public static string GetContent(string relativePath)
         {
             var baseDir = Path.GetDirectoryName(Assembly.GetCallingAssembly().Location);
-            var filePath = Path.Combine(baseDir, Path.GetFileName(relativePath));
-            if (File.Exists(filePath))
-                return File.ReadAllText(filePath);
-
             var baseName = Assembly.GetCallingAssembly().GetName().Name;
             var resourceName = relativePath
                 .TrimStart('.')

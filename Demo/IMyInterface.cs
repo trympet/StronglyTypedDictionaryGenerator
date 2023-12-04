@@ -16,5 +16,10 @@ namespace Demo
         string Property4 { get; set; }
 
         CultureInfo Property5 { get; set; }
+
+        string? NullableString { get; set; }
+
+        [System.ComponentModel.DefaultValue("Default value")]
+        string? NullableStringWithDefault { get; set; }
     }
 }

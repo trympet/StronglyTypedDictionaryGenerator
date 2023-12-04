@@ -207,7 +207,7 @@ namespace StronglyTypedDictionaryGenerator
         {
             public bool ImplementationPublic { get; set; }
 
-            public INamedTypeSymbol TargetSymbol { get; set; }
+            public INamedTypeSymbol TargetSymbol { get; set; } = null!;
 
             public bool SupportsDefaultValues { get; set; }
         }

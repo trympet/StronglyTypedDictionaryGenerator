@@ -28,7 +28,7 @@ namespace Demo
 
         public CultureInfo Property5
         {
-            get => CultureInfo.GetCultureInfo(Get());
+            get => CultureInfo.GetCultureInfo(GetOrDefault("en-US"));
             set => Set(value.Name);
         }
     }

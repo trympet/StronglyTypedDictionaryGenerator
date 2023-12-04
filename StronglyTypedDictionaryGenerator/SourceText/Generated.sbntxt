@@ -19,7 +19,7 @@ namespace {{ namespace }}
         {
         }
 
-        public {{ class_name }}(global::System.Collections.Generic.IDictionary<string, object> dictionary) : base(dictionary)
+        public {{ class_name }}(global::System.Collections.Generic.IDictionary<string, object?> dictionary) : base(dictionary)
         {
         }
 

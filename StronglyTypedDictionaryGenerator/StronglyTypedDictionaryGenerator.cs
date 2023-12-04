@@ -10,7 +10,7 @@ using System.Linq;
 namespace StronglyTypedDictionaryGenerator
 {
     [Generator]
-    public class StronglyTypedDictionaryGenerator : ISourceGenerator
+    public sealed class StronglyTypedDictionaryGenerator : ISourceGenerator
     {
         public void Initialize(GeneratorInitializationContext context)
         {

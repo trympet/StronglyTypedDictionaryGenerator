@@ -9,16 +9,16 @@ namespace Demo
 {
     internal class PersistedKeyValuePairAccessor : IStronglyTypedKeyValuePairAccessor
     {
-        private readonly Dictionary<string, object> _myPersistedKeyValueStore = new Dictionary<string, object>();
+        private readonly Dictionary<string, object?> _myPersistedKeyValueStore = new();
 
         public T Get<T>(string name) where T : unmanaged
         {
-            return (T)_myPersistedKeyValueStore[name];
+            return (T)_myPersistedKeyValueStore[name]!;
         }
 
-        public string Get(string name)
+        public string? Get(string name)
         {
-            return (string)_myPersistedKeyValueStore[name];
+            return (string?)_myPersistedKeyValueStore[name];
         }
 
         public bool TryGet<T>(string name, out T value) where T : unmanaged
@@ -40,7 +40,7 @@ namespace Demo
             _myPersistedKeyValueStore[name] = value;
         }
 
-        public void Set(string name, string value)
+        public void Set(string name, string? value)
         {
             _myPersistedKeyValueStore[name] = value;
         }

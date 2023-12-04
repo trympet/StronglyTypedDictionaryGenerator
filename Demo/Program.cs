@@ -1,11 +1,10 @@
-﻿public class Program
-{
-    class xy
-    {
+﻿using Demo;
 
-    }
+public class Program
+{
     public static void Main()
     {
-        var dict = new Dictionary<string, object>();
+        var dictionary = new StronglyTypedNamedPersistedDictionary(new Dictionary<string, object?>());
+        Console.Write(dictionary.Property1);
     }
 }

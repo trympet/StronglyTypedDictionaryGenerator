@@ -13,21 +13,21 @@ public abstract class GeneratedBase
 {
     private sealed class StronglyTypedKvpWrapper : IStronglyTypedKeyValuePairAccessor
     {
-        private readonly global::System.Collections.Generic.IDictionary<string, object> dictionary;
+        private readonly global::System.Collections.Generic.IDictionary<string, object?> dictionary;
 
-        public StronglyTypedKvpWrapper(global::System.Collections.Generic.IDictionary<string, object> dictionary)
+        public StronglyTypedKvpWrapper(global::System.Collections.Generic.IDictionary<string, object?> dictionary)
         {
             this.dictionary = dictionary;
         }
 
         public T Get<T>(string name) where T : unmanaged
         {
-            return (T)dictionary[name];
+            return (T)dictionary[name]!;
         }
 
-        public string Get(string name)
+        public string? Get(string name)
         {
-            return (string)dictionary[name];
+            return (string?)dictionary[name];
         }
 
         public bool TryGet<T>(string name, out T value) where T : unmanaged
@@ -49,7 +49,7 @@ public abstract class GeneratedBase
             dictionary[name] = value;
         }
 
-        public void Set(string name, string value)
+        public void Set(string name, string? value)
         {
             dictionary[name] = value;
         }
@@ -62,7 +62,7 @@ public abstract class GeneratedBase
         this.stronglyTypedKeyValuePairAccessor = stronglyTypedKeyValuePairAccessor;
     }
 
-    private protected GeneratedBase(global::System.Collections.Generic.IDictionary<string, object> dictionary)
+    private protected GeneratedBase(global::System.Collections.Generic.IDictionary<string, object?> dictionary)
         : this(new StronglyTypedKvpWrapper(dictionary))
     {
 
@@ -73,7 +73,7 @@ public abstract class GeneratedBase
         return stronglyTypedKeyValuePairAccessor.Get<T>(name);
     }
 
-    protected string Get([global::System.Runtime.CompilerServices.CallerMemberName] string name = null!)
+    protected string? Get([global::System.Runtime.CompilerServices.CallerMemberName] string name = null!)
     {
         return stronglyTypedKeyValuePairAccessor.Get(name);
     }
@@ -85,7 +85,8 @@ public abstract class GeneratedBase
     }
 
     [global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-    protected virtual string GetOrDefault(string defaultValue, [global::System.Runtime.CompilerServices.CallerMemberName] string name = null!)
+    [return: global::System.Diagnostics.CodeAnalysis.NotNullIfNotNull(nameof(defaultValue))]
+    protected virtual string? GetOrDefault(string? defaultValue, [global::System.Runtime.CompilerServices.CallerMemberName] string name = null!)
     {
         return stronglyTypedKeyValuePairAccessor.TryGet(name, out string? result) ? result : defaultValue;
     }
@@ -95,7 +96,7 @@ public abstract class GeneratedBase
         stronglyTypedKeyValuePairAccessor.Set(name, value);
     }
 
-    protected void Set(string value, [global::System.Runtime.CompilerServices.CallerMemberName] string name = null!)
+    protected void Set(string? value, [global::System.Runtime.CompilerServices.CallerMemberName] string name = null!)
     {
         stronglyTypedKeyValuePairAccessor.Set(name, value);
     }
@@ -107,7 +108,7 @@ public abstract class GeneratedBase<TInterface> : GeneratedBase
     {
     }
 
-    private protected GeneratedBase(global::System.Collections.Generic.IDictionary<string, object> dictionary) : base(dictionary)
+    private protected GeneratedBase(global::System.Collections.Generic.IDictionary<string, object?> dictionary) : base(dictionary)
     {
     }
 
@@ -117,7 +118,7 @@ public abstract class GeneratedBase<TInterface> : GeneratedBase
         return base.Get<TProperty>(GetMemberName(expression));
     }
 
-    public string Get(global::System.Linq.Expressions.Expression<Func<TInterface, string>> expression)
+    public string? Get(global::System.Linq.Expressions.Expression<Func<TInterface, string>> expression)
     {
         return base.Get(GetMemberName(expression));
     }
