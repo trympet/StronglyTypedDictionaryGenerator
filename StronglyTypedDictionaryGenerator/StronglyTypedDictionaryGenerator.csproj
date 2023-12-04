@@ -21,6 +21,7 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<IncludeBuildOutput>false</IncludeBuildOutput>
+    	<PackageReadmeFile>docs\README.md</PackageReadmeFile>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -29,6 +30,10 @@
 		<Copyright>Copyright © 2023 Trym Lund Flogard</Copyright>
 		<Description>A source generator for creating dictionaries backed by a strongly typed interface.</Description>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\README.md" Pack="true" PackagePath="docs\"/>
+	</ItemGroup>
 
 	<ItemGroup>
 		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
