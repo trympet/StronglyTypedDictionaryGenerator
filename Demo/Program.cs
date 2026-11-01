@@ -27,11 +27,14 @@ public class Program
         AssertEqual(default(RandomValue), dictionary.StructDefault, nameof(dictionary.StructDefault));
         AssertEqual(123m, dictionary.DecimalIntegral, nameof(dictionary.DecimalIntegral));
         AssertEqual(0m, dictionary.DecimalZero, nameof(dictionary.DecimalZero));
+        AssertEqual(TimeSpan.Zero, dictionary.DefaultTimeSpan, nameof(dictionary.DefaultTimeSpan));
 
         dictionary.FloatNaN = 1.25f;
         AssertEqual(1.25f, dictionary.FloatNaN, nameof(dictionary.FloatNaN));
         dictionary.DoublePositiveInfinity = -12.5;
         AssertEqual(-12.5, dictionary.DoublePositiveInfinity, nameof(dictionary.DoublePositiveInfinity));
+        dictionary.DefaultTimeSpan = TimeSpan.FromMinutes(5);
+        AssertEqual(TimeSpan.FromMinutes(5), dictionary.DefaultTimeSpan, nameof(dictionary.DefaultTimeSpan));
 
         Console.Write(dictionary.Property1);
     }

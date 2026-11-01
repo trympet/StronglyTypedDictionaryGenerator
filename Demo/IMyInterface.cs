@@ -87,6 +87,9 @@ namespace Demo
 
         [System.ComponentModel.DefaultValue(null)]
         decimal DecimalZero { get; set; }
+
+        [System.ComponentModel.DefaultValue(null)]
+        TimeSpan DefaultTimeSpan { get; set; }
     }
 
     internal struct RandomValue
