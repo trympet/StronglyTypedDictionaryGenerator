@@ -249,4 +249,6 @@ For `null` defaults:
 dotnet run --project Demo/Demo.csproj
 ```
 
+Package consumers need Roslyn 4.12 or newer (for example, .NET SDK 9.0 or newer).
+
 
