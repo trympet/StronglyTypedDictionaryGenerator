@@ -172,7 +172,7 @@ namespace StronglyTypedDictionaryGenerator
                 var attributeSyntax = attributeData.ApplicationSyntaxReference?.GetSyntax(context.CancellationToken) as AttributeSyntax;
                 var argumentExpression = attributeSyntax?.ArgumentList?.Arguments[0].Expression;
                 var argumentType = argumentExpression is null
-                    ? defaultConstant.Type
+                    ? null
                     : context.Compilation.GetSemanticModel(argumentExpression.SyntaxTree).GetTypeInfo(argumentExpression, context.CancellationToken).Type;
                 if (argumentType is not null
                     && argumentType.SpecialType != SpecialType.System_Object
