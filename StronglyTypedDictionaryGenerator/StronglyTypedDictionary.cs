@@ -149,15 +149,22 @@ namespace StronglyTypedDictionaryGenerator
                     return $"default({member.Type.ToDisplayString()})";
                 }
 
-                var cSharpString = defaultConstant.ToCSharpString();
-                if (defaultConstant.Kind == TypedConstantKind.Primitive
-                    && defaultConstant.Value is double d
-                    && double.IsNaN(d))
+                if (defaultConstant.Kind != TypedConstantKind.Primitive)
                 {
-                    cSharpString = $"double.{cSharpString}";
+                    return defaultConstant.ToCSharpString();
                 }
 
-                return cSharpString;
+                return defaultConstant.Value switch
+                {
+                    float value when float.IsNaN(value) => "float.NaN",
+                    float value when float.IsPositiveInfinity(value) => "float.PositiveInfinity",
+                    float value when float.IsNegativeInfinity(value) => "float.NegativeInfinity",
+                    float value => SyntaxFactory.Literal(value).Text,
+                    double value when double.IsNaN(value) => "double.NaN",
+                    double value when double.IsPositiveInfinity(value) => "double.PositiveInfinity",
+                    double value when double.IsNegativeInfinity(value) => "double.NegativeInfinity",
+                    _ => defaultConstant.ToCSharpString()
+                };
             }
 
             return null;
