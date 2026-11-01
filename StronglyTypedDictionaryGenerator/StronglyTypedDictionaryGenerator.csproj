@@ -5,6 +5,7 @@
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<PackageScribanIncludeSource>true</PackageScribanIncludeSource>
+		<PolySharpIncludeRuntimeSupportedAttributes>true</PolySharpIncludeRuntimeSupportedAttributes>
 		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
 	</PropertyGroup>
 
@@ -21,6 +22,7 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     	<PackageReadmeFile>docs\README.md</PackageReadmeFile>
 	</PropertyGroup>
 
@@ -40,9 +42,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" PrivateAssets="all" />
-		<PackageReference Include="Scriban" Version="5.9.0" Pack="false" IncludeAssets="build" PrivateAssets="all" />
+		<PackageReference Include="PolySharp" Version="1.16.0" PrivateAssets="all" />
+		<PackageReference Include="Scriban" Version="7.5.3" Pack="false" IncludeAssets="build" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>
