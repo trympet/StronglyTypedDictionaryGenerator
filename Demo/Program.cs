@@ -21,6 +21,12 @@ public class Program
         AssertEqual(long.MaxValue, dictionary.LongMaxValue, nameof(dictionary.LongMaxValue));
         AssertEqual(ulong.MaxValue, dictionary.ULongMaxValue, nameof(dictionary.ULongMaxValue));
         AssertEqual(DayOfWeek.Friday, dictionary.EnumDefault, nameof(dictionary.EnumDefault));
+        AssertEqual(int.MinValue, BitConverter.SingleToInt32Bits(dictionary.FloatNegativeZero), nameof(dictionary.FloatNegativeZero));
+        AssertEqual(long.MinValue, BitConverter.DoubleToInt64Bits(dictionary.DoubleNegativeZero), nameof(dictionary.DoubleNegativeZero));
+        AssertEqual((DayOfWeek)123, dictionary.UnnamedEnum, nameof(dictionary.UnnamedEnum));
+        AssertEqual(default(RandomValue), dictionary.StructDefault, nameof(dictionary.StructDefault));
+        AssertEqual(123m, dictionary.DecimalIntegral, nameof(dictionary.DecimalIntegral));
+        AssertEqual(0m, dictionary.DecimalZero, nameof(dictionary.DecimalZero));
 
         dictionary.FloatNaN = 1.25f;
         AssertEqual(1.25f, dictionary.FloatNaN, nameof(dictionary.FloatNaN));

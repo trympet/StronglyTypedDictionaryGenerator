@@ -227,4 +227,26 @@ public abstract class GeneratedBase<TInterface> : GeneratedBase
 }
 ```
 
+## Default values
+
+Enable defaults with `supportsDefaultValues: true`, then add `[DefaultValue(...)]` to interface properties.
+
+### Supported values
+
+- Numeric, boolean, character and string constants.
+- Enum values that match the property's enum type.
+- `null`
+
+For `null` defaults:
+- Unmanaged properties use `default(T)`.
+- Strings use `null`.
+
+`float` and `double` defaults preserve NaN, infinities and signed zero.
+
+### Run the examples
+
+```powershell
+dotnet run --project Demo/Demo.csproj
+```
+
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,15 @@ namespace StronglyTypedDictionaryGenerator
 
     internal class StronglyTypedDictionary
     {
+        private static readonly DiagnosticDescriptor UnsupportedDefaultValue = new DiagnosticDescriptor(
+            "STDG001",
+            "Unsupported default value",
+            "Default value for property '{0}' is not supported: {1}",
+            "StronglyTypedDictionaryGenerator",
+            DiagnosticSeverity.Error,
+            isEnabledByDefault: true,
+            customTags: [WellKnownDiagnosticTags.NotConfigurable]);
+
         private readonly GeneratorExecutionContext context;
 
         public StronglyTypedDictionary(GeneratorExecutionContext context)
@@ -140,34 +150,71 @@ namespace StronglyTypedDictionaryGenerator
 
         private string? GetDefaultValueString(IPropertySymbol member)
         {
-            if (member.GetAttributes().FirstOrDefault(x => x.AttributeClass?.Name == "DefaultValueAttribute") is AttributeData attributeData
-                && attributeData.ConstructorArguments.FirstOrDefault() is TypedConstant defaultConstant)
+            var attributeData = member.GetAttributes().FirstOrDefault(x => x.AttributeClass?.Name == "DefaultValueAttribute");
+            if (attributeData is null)
             {
-
-                if (defaultConstant.IsNull && member.Type.IsUnmanagedType)
-                {
-                    return $"default({member.Type.ToDisplayString()})";
-                }
-
-                if (defaultConstant.Kind != TypedConstantKind.Primitive)
-                {
-                    return defaultConstant.ToCSharpString();
-                }
-
-                return defaultConstant.Value switch
-                {
-                    float value when float.IsNaN(value) => "float.NaN",
-                    float value when float.IsPositiveInfinity(value) => "float.PositiveInfinity",
-                    float value when float.IsNegativeInfinity(value) => "float.NegativeInfinity",
-                    float value => SyntaxFactory.Literal(value).Text,
-                    double value when double.IsNaN(value) => "double.NaN",
-                    double value when double.IsPositiveInfinity(value) => "double.PositiveInfinity",
-                    double value when double.IsNegativeInfinity(value) => "double.NegativeInfinity",
-                    _ => defaultConstant.ToCSharpString()
-                };
+                return null;
             }
 
-            return null;
+            if (attributeData.ConstructorArguments.Length != 1)
+            {
+                return ReportUnsupportedDefaultValue(member, attributeData, "only the single-value constructor is supported");
+            }
+
+            var defaultConstant = attributeData.ConstructorArguments[0];
+            if (defaultConstant.Kind == TypedConstantKind.Error)
+            {
+                return ReportUnsupportedDefaultValue(member, attributeData, "the argument is not a valid constant");
+            }
+
+            if (defaultConstant.Kind == TypedConstantKind.Primitive && defaultConstant.IsNull)
+            {
+                var attributeSyntax = attributeData.ApplicationSyntaxReference?.GetSyntax(context.CancellationToken) as AttributeSyntax;
+                var argumentExpression = attributeSyntax?.ArgumentList?.Arguments[0].Expression;
+                var argumentType = argumentExpression is null
+                    ? defaultConstant.Type
+                    : context.Compilation.GetSemanticModel(argumentExpression.SyntaxTree).GetTypeInfo(argumentExpression, context.CancellationToken).Type;
+                if (argumentType is not null
+                    && argumentType.SpecialType != SpecialType.System_Object
+                    && !SymbolEqualityComparer.Default.Equals(argumentType, member.Type))
+                {
+                    return ReportUnsupportedDefaultValue(member, attributeData, $"null argument of type '{argumentType.ToDisplayString()}' is unsupported for this property");
+                }
+
+                return member.Type.IsUnmanagedType ? $"default({member.Type.ToDisplayString()})" : "null";
+            }
+
+            if (defaultConstant.Kind == TypedConstantKind.Enum
+                && SymbolEqualityComparer.Default.Equals(defaultConstant.Type, member.Type))
+            {
+                return $"({member.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)})({defaultConstant.ToCSharpString()})";
+            }
+
+            if (defaultConstant.Kind != TypedConstantKind.Primitive)
+            {
+                return ReportUnsupportedDefaultValue(member, attributeData, $"constant kind '{defaultConstant.Kind}' is unsupported for this property");
+            }
+
+            return FormatPrimitiveConstant(defaultConstant)
+                ?? ReportUnsupportedDefaultValue(member, attributeData, "the constant's value type is unsupported");
+        }
+
+        private static string? FormatPrimitiveConstant(TypedConstant defaultConstant)
+        {
+            return defaultConstant.Value switch
+            {
+                float value when float.IsNaN(value) => "float.NaN",
+                float value when float.IsPositiveInfinity(value) => "float.PositiveInfinity",
+                float value when float.IsNegativeInfinity(value) => "float.NegativeInfinity",
+                float value => SyntaxFactory.Literal(value).Text,
+                double value when double.IsNaN(value) => "double.NaN",
+                double value when double.IsPositiveInfinity(value) => "double.PositiveInfinity",
+                double value when double.IsNegativeInfinity(value) => "double.NegativeInfinity",
+                double value => $"{SyntaxFactory.Literal(value).Text}D",
+                decimal value => SyntaxFactory.Literal(value).Text,
+                bool or char or string or sbyte or byte or short or ushort or int or uint or long or ulong => defaultConstant.ToCSharpString(),
+                _ => null
+            };
         }
 
         private static AttributeArgs? GetAttributeArgs(INamedTypeSymbol namedTypeSymbol, INamedTypeSymbol attributeSymbol)
@@ -208,6 +255,19 @@ namespace StronglyTypedDictionaryGenerator
             }
 
             return sb.ToString();
+        }
+
+        private string? ReportUnsupportedDefaultValue(IPropertySymbol member, AttributeData attributeData, string reason)
+        {
+            context.ReportDiagnostic(Diagnostic.Create(
+                UnsupportedDefaultValue,
+                attributeData.ApplicationSyntaxReference?.GetSyntax(context.CancellationToken).GetLocation()
+                    ?? member.Locations.FirstOrDefault()
+                    ?? Location.None,
+                member.ToDisplayString(),
+                reason));
+
+            return null;
         }
 
         private class AttributeArgs

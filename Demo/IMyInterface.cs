@@ -69,5 +69,30 @@ namespace Demo
 
         [System.ComponentModel.DefaultValue(DayOfWeek.Friday)]
         DayOfWeek EnumDefault { get; set; }
+
+        [System.ComponentModel.DefaultValue(-0.0f)]
+        float FloatNegativeZero { get; set; }
+
+        [System.ComponentModel.DefaultValue(-0.0d)]
+        double DoubleNegativeZero { get; set; }
+
+        [System.ComponentModel.DefaultValue((DayOfWeek)123)]
+        DayOfWeek UnnamedEnum { get; set; }
+
+        [System.ComponentModel.DefaultValue(null)]
+        RandomValue StructDefault { get; set; }
+
+        [System.ComponentModel.DefaultValue(123)]
+        decimal DecimalIntegral { get; set; }
+
+        [System.ComponentModel.DefaultValue(null)]
+        decimal DecimalZero { get; set; }
+    }
+
+    internal struct RandomValue
+    {
+        public int Number { get; set; }
+
+        public float Measurement { get; set; }
     }
 }

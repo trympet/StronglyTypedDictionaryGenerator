@@ -50,4 +50,9 @@
 		<EmbeddedResource Include="SourceText\*.txt" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
+		<AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
+	</ItemGroup>
+
 </Project>
